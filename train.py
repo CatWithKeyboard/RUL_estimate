@@ -10,7 +10,8 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import GroupShuffleSplit
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestRegressor
+
+from xgboost import XGBRegressor  # ← GPU‑enabled regressor
 
 from data_loader import IMSDataLoader, IMS_CONFIG
 from feature_engineering import extract_features
@@ -65,12 +66,15 @@ def train_model(feature_df: pd.DataFrame, target_col: str = "rul_hours"):
 
     model = Pipeline([
         ("preprocessor", preprocessor),
-        ("regressor", RandomForestRegressor(
+        # XGBoost with GPU:
+        ("regressor", XGBRegressor(
+            tree_method="gpu_hist",   # ← GPU training
+            gpu_id=0,                 # GPU index
+            booster="gbtree",
             n_estimators=300,
             max_depth=12,
-            min_samples_leaf=2,
+            learning_rate=0.1,
             random_state=42,
-            n_jobs=-1,
         )),
     ])
 

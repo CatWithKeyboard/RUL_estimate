@@ -52,18 +52,4 @@ if uploaded_files:
         pred_df["predicted_rul_hours"] = model.predict(pred_df[feature_cols])
         pred_df["predicted_rul_days"] = pred_df["predicted_rul_hours"] / 24.0
 
-        latest = pred_df.iloc[-1]
-        c1, c2 = st.columns(2)
-        c1.metric("Latest predicted RUL (hours)", f"{latest['predicted_rul_hours']:.2f}")
-        c2.metric("Latest predicted RUL (days)", f"{latest['predicted_rul_days']:.2f}")
-
-        fig = px.line(pred_df, x="timestamp", y="predicted_rul_hours", markers=True, title="Predicted RUL Trend")
-        st.plotly_chart(fig, use_container_width=True)
-
-        st.subheader("Predictions")
-        st.dataframe(pred_df[["timestamp", "file_name", "predicted_rul_hours", "predicted_rul_days"]], use_container_width=True)
-
-        csv = pred_df.to_csv(index=False).encode("utf-8")
-        st.download_button("Download predictions CSV", data=csv, file_name="bearing_rul_predictions.csv", mime="text/csv")
-else:
-    st.info("Upload IMS bearing snapshot files to estimate remaining useful life.")
+        latest =
